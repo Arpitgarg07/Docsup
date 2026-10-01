@@ -1,0 +1,2 @@
+import Link from "next/link";
+export default function NotFound() { return <main style={{minHeight:"100vh",display:"grid",placeItems:"center",padding:30}}><div style={{textAlign:"center"}}><div className="eyebrow" style={{justifyContent:"center"}}>Docsup</div><h1 style={{fontSize:64}}>That page wandered off.</h1><p className="lead" style={{margin:"auto"}}>The document or page you requested does not exist.</p><Link href="/" className="primary-btn" style={{display:"inline-block",marginTop:25}}>Back to home</Link></div></main>; }

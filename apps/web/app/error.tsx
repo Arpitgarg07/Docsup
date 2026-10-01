@@ -1,0 +1,2 @@
+"use client";
+export default function Error({ reset }: { reset: () => void }) { return <main style={{minHeight:"100vh",display:"grid",placeItems:"center",padding:30}}><div style={{textAlign:"center"}}><div className="eyebrow" style={{justifyContent:"center"}}>Something went wrong</div><h1 style={{fontSize:52}}>Your original files are safe.</h1><p className="lead" style={{margin:"auto"}}>We could not load this space. Try again, or come back in a moment.</p><button onClick={reset} className="primary-btn" style={{marginTop:25}}>Try again</button></div></main>; }

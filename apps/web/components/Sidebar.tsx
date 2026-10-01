@@ -1,0 +1,5 @@
+import { Archive, Bell, FileText, Folder, Home, LockKeyhole, Settings, Users } from "./icons";
+import { Brand } from "./Brand";
+
+const links = [{ label: "Home", icon: Home, active: true }, { label: "Documents", icon: FileText }, { label: "Profiles", icon: Users }, { label: "Search", icon: Folder }];
+export function Sidebar() { return <aside className="sidebar"><div className="side-brand"><Brand /></div><nav className="side-nav">{links.map(({ label, icon: Icon, active }) => <a className={`side-item ${active ? "active" : ""}`} href="#" key={label}><Icon size={17} strokeWidth={active ? 2.4 : 1.8} />{label}</a>)}<div className="side-label">Family space</div><a className="side-item" href="#"><Users size={17} />Family</a><a className="side-item" href="#"><Bell size={17} />Notifications</a><div className="side-label">Workspace</div><a className="side-item" href="#"><LockKeyhole size={17} />Security</a><a className="side-item" href="#"><Settings size={17} />Settings</a></nav><div className="side-bottom"><a className="side-item" href="#"><Archive size={17} />Trash</a></div></aside>; }

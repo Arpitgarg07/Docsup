@@ -1,0 +1,4 @@
+import { PrismaClient } from "@prisma/client";
+const db = new PrismaClient();
+async function main() { const user = await db.user.upsert({ where: { email: "demo@docsup.local" }, update: {}, create: { email: "demo@docsup.local", name: "Demo Owner" } }); const family = await db.family.create({ data: { name: "Demo Family", members: { create: { userId: user.id, role: "OWNER" } }, profiles: { create: [{ name: "Demo Owner", relationship: "Self" }, { name: "Parent", relationship: "Parent" }] }, categories: { create: [{ name: "Identity", slug: "identity", system: true }, { name: "Insurance", slug: "insurance", system: true }, { name: "Education", slug: "education", system: true }] } } }); console.log(`Created ${family.name} (${family.id}) for ${user.email}`); }
+main().finally(() => db.$disconnect());

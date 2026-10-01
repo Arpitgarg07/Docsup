@@ -1,0 +1,303 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum FamilyRole {
+  OWNER
+  ADMIN
+  MEMBER
+  UPLOADER
+  VIEWER
+}
+
+enum DocumentStatus {
+  DRAFT
+  UPLOADING
+  PROCESSING
+  PENDING_APPROVAL
+  APPROVED
+  VERIFIED
+  REJECTED
+  ARCHIVED
+  DELETED
+}
+
+enum ApprovalMode {
+  EVERY_UPLOAD
+  SENSITIVE_ONLY
+  NONE
+}
+
+enum ShareStatus {
+  ACTIVE
+  REVOKED
+  EXPIRED
+}
+
+enum AuditAction {
+  LOGIN
+  LOGOUT
+  FAILED_LOGIN
+  FAMILY_CREATED
+  MEMBER_JOINED
+  MEMBER_REMOVED
+  DOCUMENT_UPLOADED
+  DOCUMENT_VIEWED
+  DOCUMENT_DOWNLOADED
+  DOCUMENT_SHARED
+  DOCUMENT_APPROVED
+  DOCUMENT_REJECTED
+  DOCUMENT_DELETED
+  AI_PROCESSED
+  SETTINGS_CHANGED
+  PERMISSION_CHANGED
+}
+
+enum AuditSeverity {
+  INFO
+  WARNING
+  SECURITY_EVENT
+}
+
+model User {
+  id              String          @id @default(cuid())
+  email           String?         @unique
+  phone           String?         @unique
+  name            String?
+  image           String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  sessions        Session[]
+  memberships     FamilyMember[]
+  uploadedDocs    Document[]      @relation("Uploader")
+  auditLogs       AuditLog[]
+  notifications   Notification[]
+  invitationsSent FamilyInvite[]  @relation("Inviter")
+  otpChallenges   OtpChallenge[]
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  tokenHash    String   @unique
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt    DateTime
+  lastSeenAt   DateTime @default(now())
+  userAgent    String?
+  createdAt    DateTime @default(now())
+  @@index([userId, expiresAt])
+}
+
+model OtpChallenge {
+  id          String   @id @default(cuid())
+  destination String
+  codeHash    String
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  expiresAt   DateTime
+  attempts    Int      @default(0)
+  consumedAt  DateTime?
+  createdAt   DateTime @default(now())
+  @@index([destination, expiresAt])
+}
+
+model Family {
+  id             String         @id @default(cuid())
+  name           String
+  approvalMode   ApprovalMode   @default(EVERY_UPLOAD)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  members        FamilyMember[]
+  profiles       Profile[]
+  categories     Category[]
+  documents      Document[]
+  invites        FamilyInvite[]
+  shares         DocumentShare[]
+  auditLogs      AuditLog[]
+  settings       SystemSetting[]
+}
+
+model FamilyMember {
+  id        String     @id @default(cuid())
+  familyId  String
+  userId    String
+  role      FamilyRole @default(MEMBER)
+  joinedAt  DateTime    @default(now())
+  family    Family     @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([familyId, userId])
+  @@index([userId])
+}
+
+model FamilyInvite {
+  id         String    @id @default(cuid())
+  familyId   String
+  inviterId  String
+  tokenHash  String    @unique
+  codeHash   String?   @unique
+  email      String?
+  role       FamilyRole @default(MEMBER)
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  acceptedAt DateTime?
+  family     Family    @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  inviter    User      @relation("Inviter", fields: [inviterId], references: [id])
+  @@index([familyId, expiresAt])
+}
+
+model Profile {
+  id           String     @id @default(cuid())
+  familyId     String
+  name         String
+  relationship String?
+  photoKey     String?
+  dateOfBirth  DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  family       Family     @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  documents    Document[]
+  @@index([familyId, name])
+}
+
+model Category {
+  id          String         @id @default(cuid())
+  familyId    String
+  name        String
+  slug        String
+  system      Boolean        @default(false)
+  sortOrder   Int            @default(0)
+  family      Family         @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  documents   Document[]
+  @@unique([familyId, slug])
+}
+
+model Document {
+  id             String          @id @default(cuid())
+  familyId       String
+  profileId      String
+  categoryId     String
+  uploadedById   String
+  title          String
+  documentType   String
+  status         DocumentStatus  @default(DRAFT)
+  sensitive      Boolean         @default(true)
+  aiProcessed    Boolean         @default(false)
+  verifiedAt     DateTime?
+  verificationNote String?
+  expiresAt      DateTime?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  family         Family          @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  profile        Profile         @relation(fields: [profileId], references: [id], onDelete: Restrict)
+  category       Category        @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  uploadedBy     User            @relation("Uploader", fields: [uploadedById], references: [id])
+  versions       DocumentVersion[]
+  metadata       DocumentMetadata[]
+  shares         DocumentShare[]
+  processingJobs AIProcessingJob[]
+  @@index([familyId, status, updatedAt])
+  @@index([familyId, profileId, categoryId])
+  @@index([familyId, expiresAt])
+}
+
+model DocumentVersion {
+  id          String   @id @default(cuid())
+  documentId  String
+  kind        String
+  objectKey   String
+  fileName    String
+  mimeType    String
+  byteSize    BigInt
+  checksum    String?
+  createdAt   DateTime @default(now())
+  document    Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  @@index([documentId, kind])
+}
+
+model DocumentMetadata {
+  id          String   @id @default(cuid())
+  documentId  String
+  field       String
+  value       String
+  confidence  Decimal?  @db.Decimal(5, 4)
+  needsReview Boolean   @default(true)
+  source      String    @default("AI")
+  document    Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  @@index([field, value])
+}
+
+model DocumentShare {
+  id            String      @id @default(cuid())
+  documentId    String
+  familyId      String
+  tokenHash     String      @unique
+  passwordHash  String?
+  allowDownload Boolean     @default(false)
+  expiresAt     DateTime
+  revokedAt     DateTime?
+  createdAt     DateTime    @default(now())
+  document      Document    @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  family        Family      @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  @@index([documentId, expiresAt])
+}
+
+model AIProcessingJob {
+  id          String    @id @default(cuid())
+  documentId  String
+  task        String
+  provider    String?
+  model       String?
+  status      String    @default("QUEUED")
+  requestId   String?
+  tokenUsage  Int?
+  errorCode   String?
+  startedAt   DateTime?
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  document    Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  @@index([status, createdAt])
+}
+
+model AuditLog {
+  id         String        @id @default(cuid())
+  userId     String?
+  familyId   String?
+  action     AuditAction
+  severity   AuditSeverity @default(INFO)
+  entityType String?
+  entityId   String?
+  requestId  String?
+  metadata   Json?
+  createdAt  DateTime      @default(now())
+  user       User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  family     Family?       @relation(fields: [familyId], references: [id], onDelete: SetNull)
+  @@index([familyId, createdAt])
+  @@index([userId, createdAt])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String
+  title     String
+  body      String
+  readAt    DateTime?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId, readAt, createdAt])
+}
+
+model SystemSetting {
+  id        String   @id @default(cuid())
+  familyId  String
+  key       String
+  value     Json
+  updatedAt DateTime @updatedAt
+  family    Family   @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  @@unique([familyId, key])
+}

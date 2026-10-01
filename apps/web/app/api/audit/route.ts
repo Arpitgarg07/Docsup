@@ -1,0 +1,5 @@
+import { z } from "zod";
+import { db } from "../../../lib/db";
+import { getCurrentUser } from "../../../lib/auth";
+import { apiError, apiOk } from "../../../lib/api";
+export async function GET(request: Request) { const user = await getCurrentUser(); if (!user) return apiError("Authentication required", 401); const parsed = z.object({ familyId: z.string(), page: z.coerce.number().int().min(1).default(1) }).safeParse(Object.fromEntries(new URL(request.url).searchParams)); if (!parsed.success) return apiError("Invalid audit filters", 422); const member = await db.familyMember.findUnique({ where: { familyId_userId: { familyId: parsed.data.familyId, userId: user.id } } }); if (!member || !["OWNER","ADMIN"].includes(member.role)) return apiError("Forbidden", 403); const items = await db.auditLog.findMany({ where: { familyId: parsed.data.familyId }, orderBy: { createdAt: "desc" }, skip: (parsed.data.page - 1) * 50, take: 50, select: { id: true, action: true, severity: true, entityType: true, createdAt: true, user: { select: { name: true, email: true } } } }); return apiOk({ items }); }

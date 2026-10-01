@@ -1,0 +1,7 @@
+import { randomBytes, createHash } from "node:crypto";
+import { z } from "zod";
+import { db } from "../../../../../lib/db";
+import { requireFamilyMember } from "../../../../../lib/auth";
+import { apiError, apiOk } from "../../../../../lib/api";
+const schema = z.object({ email: z.string().email().optional(), role: z.enum(["ADMIN","MEMBER","UPLOADER","VIEWER"]).default("MEMBER") });
+export async function POST(request: Request, { params }: { params: Promise<{ familyId: string }> }) { const { familyId } = await params; let actor; try { actor = await requireFamilyMember(familyId, ["OWNER", "ADMIN"]); } catch (e) { return apiError(e instanceof Error && e.message === "UNAUTHENTICATED" ? "Authentication required" : "You cannot manage this family", e instanceof Error && e.message === "UNAUTHENTICATED" ? 401 : 403); } const parsed = schema.safeParse(await request.json().catch(() => null)); if (!parsed.success) return apiError("Invalid invitation", 422); const raw = randomBytes(32).toString("base64url"); const code = `DOC-${randomBytes(3).toString("hex").toUpperCase()}`; const invite = await db.familyInvite.create({ data: { familyId, inviterId: actor.user.id, email: parsed.data.email, role: parsed.data.role, tokenHash: createHash("sha256").update(raw).digest("hex"), codeHash: createHash("sha256").update(code).digest("hex"), expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) } }); return apiOk({ id: invite.id, code, link: `${process.env.APP_URL ?? "http://localhost:3000"}/join/${raw}`, expiresAt: invite.expiresAt }, 201); }
