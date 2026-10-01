@@ -11,10 +11,12 @@ export const dynamic = "force-dynamic";
 export default async function DocumentsPage() {
   let families: DocumentFamily[] = [];
   let error: string | undefined;
+  let signInRequired = false;
   try {
     const user = await getCurrentUser();
     if (!user) {
-      error = "Sign in required. Please use your existing Docsup sign-in session, then reload this page.";
+      signInRequired = true;
+      error = "Sign in required. Sign in to Docsup to access your family documents.";
     } else {
       // No profile/category listing API exists. Bootstrap only upload choices on
       // the server, scoped by the existing session and FamilyMember relationship.
@@ -43,6 +45,7 @@ export default async function DocumentsPage() {
       <div className="workspace-top"><h1>Documents</h1><Link className="text-link" href="/dashboard">Back to dashboard</Link></div>
       <p className="small-muted">Your family’s documents, stored privately.</p>
       <p id="dashboard-availability" className="small-muted">Home and Documents are available. Other sidebar pages are not implemented yet.</p>
+      {signInRequired && <p><Link href="/sign-in" className="primary-btn">Sign in to Docsup</Link></p>}
       <Documents families={families} initialError={error} />
     </main>
   </div>;

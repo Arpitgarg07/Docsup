@@ -31,7 +31,7 @@ Search was inspected: `GET /api/search?familyId=...&q=...` requires a 2–120 ch
 - Download first requests a token, then fetches the same-origin byte endpoint. API errors are displayed rather than saved as files. A temporary browser blob URL is used only to hand authenticated bytes to the browser's download manager.
 - Deletion requires confirmation. Cancel changes nothing. Errors do not claim success; an uncertain deletion blocks approval/download until retried or reconciled.
 - Family changes reset the document workspace. Aborted/stale list and detail requests cannot replace another family's results. The backend remains the authority for every operation.
-- An existing signed-in session, family membership, profile and category are prerequisites. This change does not create onboarding or sign-in screens, profile/category creation, AI jobs, or search UI.
+- An existing signed-in session, family membership, profile and category are prerequisites. The `/sign-in` UI now supports server-side Resend email OTP; configure the provider and verify real inbox delivery before relying on end-user login. See [authentication setup and status](authentication.md). Onboarding, profile/category creation, AI jobs and search UI remain outside the Documents flow.
 
 ## Opt-in live regression check
 

@@ -15,7 +15,8 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:seed": "tsx prisma/seed.ts",
-    "storage:setup": "tsx scripts/appwrite-setup.ts"
+    "storage:setup": "tsx scripts/appwrite-setup.ts",
+    "test:email": "node --conditions=react-server --import tsx --test scripts/test-email-otp.cjs"
   },
   "engines": {
     "node": ">=20"

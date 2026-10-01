@@ -2,22 +2,22 @@
   "schema_version": 1,
   "items": [
     {
-      "title": "Inspect document API contracts, authorization, and available frontend data",
+      "title": "Inspect the live OTP request path, environment loading, and diagnostic gaps",
       "status": "done"
     },
     {
-      "title": "Implement real Documents listing, upload, detail, download, and delete UI",
+      "title": "Reproduce and classify the upstream failure safely",
       "status": "done"
     },
     {
-      "title": "Run typecheck, lint, and build",
+      "title": "Apply the smallest safe fix and run checks",
       "status": "done"
     },
     {
-      "title": "Test the live synthetic document flow and report verified results",
+      "title": "Report live delivery and verification results or the precise blocker",
       "status": "done"
     }
   ],
-  "updated_at": "2026-10-01T20:23:58.630Z",
+  "updated_at": "2026-10-01T21:26:56.091Z",
   "session_id": "01a0f84b-d381-76c6-881f-891ce5d373a7"
 }

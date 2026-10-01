@@ -6,7 +6,7 @@ Docsup is a privacy-first family document vault. The repository starts with a Ne
 
 ## Status
 
-The core foundation is implemented: family and profile data modeling, RBAC, session-backed authentication primitives, Google OAuth callback, OTP challenge storage, family-scoped document/search APIs, Appwrite private-storage upload/download/delete flows, approval and audit endpoints, signed-share token model, AI provider abstraction for Gemini/Groq, security headers, and a responsive product UI. Appwrite credentials and an external OTP delivery adapter must be configured before accepting production uploads.
+The core foundation is implemented: family and profile data modeling, RBAC, session-backed authentication primitives, Google OAuth callback, OTP challenge storage, family-scoped document/search APIs, Appwrite private-storage upload/download/delete flows, approval and audit endpoints, signed-share token model, AI provider abstraction for Gemini/Groq, security headers, and a responsive product UI. Appwrite credentials and Resend email OTP must be configured and live-verified before relying on normal end-user sign-in. See [email authentication setup](docs/authentication.md) for server-only variables and the ₹0 local-testing restrictions.
 
 ## Quick start
 
@@ -52,7 +52,7 @@ Never use real personal documents in seed data. Keep `.env` out of version contr
 
 ## Security posture
 
-Documents are never public by default. Data access queries verify family membership and profile ownership. Original files are immutable versions in an Appwrite Cloud private bucket; public Appwrite file URLs are never returned. Server-only Appwrite credentials and HMAC download-token secrets stay outside browser bundles. Share tokens and sessions are stored hashed. AI keys remain server-side; AI output is untrusted and processing failures do not block the core vault. Before production, add a transactional email/SMS OTP provider, a queue worker, managed secret storage, and operational backup/restore and malware-scanning verification.
+Documents are never public by default. Data access queries verify family membership and profile ownership. Original files are immutable versions in an Appwrite Cloud private bucket; public Appwrite file URLs are never returned. Server-only Appwrite credentials and HMAC download-token secrets stay outside browser bundles. Share tokens and sessions are stored hashed. AI keys remain server-side; AI output is untrusted and processing failures do not block the core vault. Before production, verify Resend email OTP delivery and abuse controls, and add managed secret storage and operational backup/restore and malware-scanning verification. A queue worker can be added when needed; email OTP does not require Redis or Docker.
 
 ## Quality commands
 

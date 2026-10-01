@@ -1,0 +1,11 @@
+.card { max-width: 520px; margin: 24px auto; padding: 28px; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; }
+.card h1 { font-size: 32px; letter-spacing: -.04em; line-height: 1.1; }
+.card p { font-size: 14px; line-height: 1.5; }
+.card fieldset { display: grid; gap: 12px; border: 0; margin: 20px 0; padding: 0; min-width: 0; }
+.card legend { font-weight: 700; padding: 0 0 12px; }
+.card label { font-size: 14px; }
+.card input { width: 100%; min-width: 0; padding: 12px; border: 1px solid var(--line); border-radius: 9px; background: white; color: var(--ink); }
+.card :focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+.card button:disabled { cursor: not-allowed; opacity: .6; }
+.warning { background: #f7f2e7; border-radius: 8px; padding: 12px; }
+.error { color: #7b3024; background: #fbebe6; padding: 12px; border-radius: 8px; }
