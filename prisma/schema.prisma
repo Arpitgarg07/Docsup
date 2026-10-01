@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -19,12 +20,14 @@ enum DocumentStatus {
   DRAFT
   UPLOADING
   PROCESSING
+  UPLOADED
   PENDING_APPROVAL
   APPROVED
   VERIFIED
   REJECTED
   ARCHIVED
   DELETED
+  DELETION_PENDING
 }
 
 enum ApprovalMode {
@@ -53,6 +56,7 @@ enum AuditAction {
   DOCUMENT_APPROVED
   DOCUMENT_REJECTED
   DOCUMENT_DELETED
+  DOCUMENT_DELETION_FAILED
   AI_PROCESSED
   SETTINGS_CHANGED
   PERMISSION_CHANGED
@@ -210,6 +214,8 @@ model DocumentVersion {
   documentId  String
   kind        String
   objectKey   String
+  storageProvider String @default("appwrite")
+  storageFileId String
   fileName    String
   mimeType    String
   byteSize    BigInt

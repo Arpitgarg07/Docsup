@@ -1,0 +1,25 @@
+.documents { display: grid; gap: 24px; margin-top: 24px; }
+.panel { background: var(--paper); border: 1px solid var(--line); border-radius: 15px; padding: 22px; margin-top: 18px; overflow-wrap: anywhere; }
+.panel h2 { font-size: 21px; letter-spacing: -.04em; }
+.panel h3 { font-size: 16px; }
+.family, .form label { display: grid; gap: 8px; font-size: 13px; font-weight: 700; }
+.family { max-width: 380px; }
+.family select, .form input:not([type=checkbox]), .form select { width: 100%; padding: 11px 12px; border: 1px solid var(--line); border-radius: 9px; background: white; color: var(--ink); font: inherit; min-width: 0; }
+.form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; padding: 0; border: 0; margin: 20px 0 0; min-width: 0; }
+.wide { grid-column: 1 / -1; }
+.form .checkbox { display: flex; align-items: center; gap: 8px; }
+.notice, .error { border-radius: 10px; padding: 14px 16px; margin: 0; overflow-wrap: anywhere; }
+.notice { background: #e6efe5; color: var(--deep); }
+.error { background: #fbebe6; color: #7b3024; }
+.card { gap: 8px; flex-wrap: wrap; }
+.cardBody { flex: 1; min-width: 160px; overflow-wrap: anywhere; }
+.documentTitle { text-align: left; background: none; border: none; padding: 0; font-size: 15px; font-weight: 800; color: var(--green); text-decoration: underline; text-underline-offset: 3px; }
+.status { font-size: 12px; padding: 6px 9px; border-radius: 99px; background: #edf1ed; color: var(--deep); }
+.actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 18px; font-size: 13px; }
+.metadata { display: grid; grid-template-columns: minmax(90px, 150px) 1fr; gap: 10px; font-size: 14px; }
+.metadata dt { color: var(--muted); }
+.metadata dd { margin: 0; overflow-wrap: anywhere; }
+.confirm { margin-top: 20px; padding: 14px; background: #fbebe6; border-radius: 10px; }
+.srOnly { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.documents :focus-visible, .panel :focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+@media(max-width:650px) { .form { grid-template-columns: 1fr; } .panel { padding: 16px; } .metadata { grid-template-columns: 100px 1fr; } }

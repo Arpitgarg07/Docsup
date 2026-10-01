@@ -16,4 +16,4 @@ All JSON responses use `{ data }` on success and `{ error: { message, requestId 
 - `GET /api/auth/google`, `GET /api/auth/google/callback`
 - `POST /api/auth/logout`
 
-The upload completion contract should be added alongside the private object-storage adapter: request an authorized presigned upload, upload directly, then complete into `DocumentVersion` and enqueue scanning/processing.
+Uploads currently use `POST /api/documents` with an authenticated multipart request. The server validates the family, profile, category, MIME type, magic bytes, and 25 MB limit before writing to the Appwrite private bucket. It then records an immutable `DocumentVersion`, applies the family approval mode, writes an audit event, and optionally queues an AI processing job. Download-token creation and streaming are authenticated and never expose a public Appwrite URL.

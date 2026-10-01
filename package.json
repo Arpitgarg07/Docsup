@@ -3,7 +3,9 @@
   "private": true,
   "version": "0.1.0",
   "description": "Docsup — your family's documents, securely organized.",
-  "workspaces": ["apps/*"],
+  "workspaces": [
+    "apps/*"
+  ],
   "scripts": {
     "dev": "npm run dev --workspace @docsup/web",
     "build": "npm run build --workspace @docsup/web",
@@ -12,8 +14,14 @@
     "typecheck": "npm run typecheck --workspace @docsup/web",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "storage:setup": "tsx scripts/appwrite-setup.ts"
   },
-  "engines": {"node": ">=20"},
-  "packageManager": "npm@11.4.2"
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "npm@11.4.2",
+  "devDependencies": {
+    "dotenv": "^18.0.5"
+  }
 }

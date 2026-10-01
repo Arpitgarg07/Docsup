@@ -2,22 +2,22 @@
   "schema_version": 1,
   "items": [
     {
-      "title": "Inspect repository and existing infrastructure",
+      "title": "Inspect document API contracts, authorization, and available frontend data",
       "status": "done"
     },
     {
-      "title": "Define implementable architecture and delivery scope",
+      "title": "Implement real Documents listing, upload, detail, download, and delete UI",
       "status": "done"
     },
     {
-      "title": "Implement core Docsup application foundation",
+      "title": "Run typecheck, lint, and build",
       "status": "done"
     },
     {
-      "title": "Run validation and document current capabilities",
+      "title": "Test the live synthetic document flow and report verified results",
       "status": "done"
     }
   ],
-  "updated_at": "2026-10-01T15:38:03.550Z",
-  "session_id": "01a0f7fd-946a-7185-9941-0cb5baabfa52"
+  "updated_at": "2026-10-01T20:23:58.630Z",
+  "session_id": "01a0f84b-d381-76c6-881f-891ce5d373a7"
 }
