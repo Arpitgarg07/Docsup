@@ -14,7 +14,8 @@ All JSON responses use `{ data }` on success and `{ error: { message, requestId 
 - `POST /api/documents/:documentId/approve`
 - `POST /api/documents/:documentId/process`
 - `POST /api/documents/:documentId/share`
-- `GET /api/search?familyId=...&q=...`
+- `GET /api/search/documents?familyId=...&q=...` (text, profile/category, status, verification, dates, bounded pagination)
+- `GET /api/search?familyId=...&q=...` (compatibility route using the same search contract)
 - `GET /api/audit?familyId=...`
 - `POST /api/auth/otp/request`
 - `GET /api/auth/google`, `GET /api/auth/google/callback`

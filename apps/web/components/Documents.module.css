@@ -2,9 +2,14 @@
 .panel { background: var(--paper); border: 1px solid var(--line); border-radius: 15px; padding: 22px; margin-top: 18px; overflow-wrap: anywhere; }
 .panel h2 { font-size: 21px; letter-spacing: -.04em; }
 .panel h3 { font-size: 16px; }
-.family, .form label { display: grid; gap: 8px; font-size: 13px; font-weight: 700; }
+.family, .form label, .searchField { display: grid; gap: 8px; font-size: 13px; font-weight: 700; }
 .family { max-width: 380px; }
-.family select, .form input:not([type=checkbox]), .form select { width: 100%; padding: 11px 12px; border: 1px solid var(--line); border-radius: 9px; background: white; color: var(--ink); font: inherit; min-width: 0; }
+.family select, .form input:not([type=checkbox]), .form select, .searchField input, .searchField select { width: 100%; padding: 11px 12px; border: 1px solid var(--line); border-radius: 9px; background: white; color: var(--ink); font: inherit; min-width: 0; }
+.searchForm { display: grid; gap: 16px; }
+.searchInput { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: end; }
+.searchGrid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.searchHint { margin: 0; color: var(--muted); font-size: 12px; }
+.clearButton { justify-self: start; }
 .form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; padding: 0; border: 0; margin: 20px 0 0; min-width: 0; }
 .wide { grid-column: 1 / -1; }
 .form .checkbox { display: flex; align-items: center; gap: 8px; }
@@ -22,4 +27,5 @@
 .confirm { margin-top: 20px; padding: 14px; background: #fbebe6; border-radius: 10px; }
 .srOnly { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .documents :focus-visible, .panel :focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
-@media(max-width:650px) { .form { grid-template-columns: 1fr; } .panel { padding: 16px; } .metadata { grid-template-columns: 100px 1fr; } }
+@media(max-width:900px) { .searchGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media(max-width:650px) { .form { grid-template-columns: 1fr; } .panel { padding: 16px; } .metadata { grid-template-columns: 100px 1fr; } .searchInput, .searchGrid { grid-template-columns: 1fr; } }

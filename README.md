@@ -6,7 +6,7 @@ Docsup is a privacy-first family document vault. The repository starts with a Ne
 
 ## Status
 
-The core foundation is implemented: family/profile onboarding and RBAC, session-backed authentication primitives, Google OAuth callback, OTP challenge storage, family-scoped document/search APIs, Appwrite private-storage upload/download/delete flows, approval and audit endpoints, signed-share token model, AI provider abstraction for Gemini/Groq, security headers, and a responsive product UI. Appwrite credentials and Resend email OTP must be configured and live-verified before relying on normal end-user sign-in. See [family onboarding](docs/onboarding.md), the [feature matrix](docs/feature-matrix.md), and [email authentication setup](docs/authentication.md) for current boundaries.
+The core foundation is implemented: family/profile onboarding and RBAC, session-backed authentication primitives, Google OAuth callback, OTP challenge storage, family-scoped document/search APIs, Appwrite private-storage upload/download/delete flows, approval and audit endpoints, signed-share token model, AI provider abstraction for Gemini/Groq, security headers, and a responsive product UI. Appwrite credentials and Resend email OTP must be configured and live-verified before relying on normal end-user sign-in. See [family onboarding](docs/onboarding.md), [search and discovery](docs/search.md), the [feature matrix](docs/feature-matrix.md), and [email authentication setup](docs/authentication.md) for current boundaries.
 
 ## Quick start
 

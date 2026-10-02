@@ -18,9 +18,9 @@ export default async function DocumentsPage() {
       signInRequired = true;
       error = "Sign in required. Sign in to Docsup to access your family documents.";
     } else {
-      // No profile/category listing API exists. Bootstrap only upload choices on
-      // the server, scoped by the existing session and FamilyMember relationship.
-      // All document reads and mutations still go through the existing APIs.
+      // Bootstrap authorized upload/search choices on the server using the
+      // existing session and FamilyMember relationship. Document reads and
+      // mutations still go through the existing APIs.
       const memberships = await db.familyMember.findMany({
         where: { userId: user.id },
         select: {
@@ -44,7 +44,7 @@ export default async function DocumentsPage() {
     <main className="workspace">
       <div className="workspace-top"><h1>Documents</h1><Link className="text-link" href="/dashboard">Back to dashboard</Link></div>
       <p className="small-muted">Your family’s documents, stored privately.</p>
-      <p id="dashboard-availability" className="small-muted">Home and Documents are available. Other sidebar pages are not implemented yet.</p>
+      <p id="dashboard-availability" className="small-muted">Documents includes real family-scoped search. Family and Profiles provide onboarding; unavailable sidebar areas remain disabled.</p>
       {signInRequired && <p><Link href="/sign-in" className="primary-btn">Sign in to Docsup</Link></p>}
       <Documents families={families} initialError={error} />
     </main>

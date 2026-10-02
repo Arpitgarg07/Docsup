@@ -1,12 +1,10 @@
-import { db } from "../../../lib/db";
-import { getCurrentUser } from "../../../lib/auth";
-import { apiError, apiOk } from "../../../lib/api";
-import { parseDocumentSearch, searchDocuments } from "../../../lib/document-search";
+import { db } from "../../../../lib/db";
+import { getCurrentUser } from "../../../../lib/auth";
+import { apiError, apiOk } from "../../../../lib/api";
+import { parseDocumentSearch, searchDocuments } from "../../../../lib/document-search";
 
 export const runtime = "nodejs";
 
-// Backwards-compatible family search surface. The Documents UI uses the more
-// explicit /api/search/documents route, but existing API consumers keep working.
 export async function GET(request: Request) {
   let user;
   try { user = await getCurrentUser(); }

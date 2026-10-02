@@ -2,26 +2,26 @@
   "schema_version": 1,
   "items": [
     {
-      "title": "Audit current repository and build feature matrix",
+      "title": "Audit existing document schema, APIs, metadata, authorization, and UI",
       "status": "done"
     },
     {
-      "title": "Inspect onboarding models, APIs, authorization, and reusable UI",
+      "title": "Define and implement family-scoped search API with bounded filtering",
       "status": "done"
     },
     {
-      "title": "Fix onboarding UI state and harden new management APIs",
+      "title": "Integrate real search and filters into Documents UI",
       "status": "done"
     },
     {
-      "title": "Connect onboarding to Documents and update accurate documentation",
+      "title": "Add search security/regression tests and documentation",
       "status": "done"
     },
     {
-      "title": "Run final quality checks and live browser/API regressions",
+      "title": "Run full checks and live browser/document regressions",
       "status": "done"
     }
   ],
-  "updated_at": "2026-10-02T07:54:59.582Z",
+  "updated_at": "2026-10-02T09:16:56.735Z",
   "session_id": "01a0f84b-d381-76c6-881f-891ce5d373a7"
 }

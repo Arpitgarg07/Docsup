@@ -27,7 +27,7 @@ export type DocumentSummary = {
   createdAt: string;
   updatedAt: string;
   verifiedAt: string | null;
-  verificationNote: string | null;
+  verificationNote?: string | null;
   profile: { name: string };
   category: { name: string };
   versions: DocumentVersionSummary[];
@@ -39,6 +39,7 @@ export type DocumentPage = {
   pageSize: number;
   total: number;
   pages: number;
+  hasNextPage?: boolean;
 };
 
 export async function responseError(response: Response): Promise<Error> {

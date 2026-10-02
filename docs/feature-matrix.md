@@ -16,7 +16,7 @@ Audit basis: current `master` working tree, Prisma schema/migrations, Next.js ro
 | Profiles | COMPLETE + API VERIFIED | Owner/admin CRUD routes and `/profiles`/`/profile/create`; profiles with documents cannot be deleted. |
 | Categories | COMPLETE + API VERIFIED | Member list and owner/admin create route/UI; duplicate slug/name conflicts return 409. |
 | Documents backend/frontend | COMPLETE + VERIFIED | `/documents`, upload/list/detail/approve/download/delete and security checks are live verified; onboarding supplies its real family/profile/category choices. |
-| Search | IMPLEMENTED BUT UNVERIFIED | Family-scoped `/api/search` exists; no `/search` UI. |
+| Search | COMPLETE + VERIFIED | `/api/search/documents` and compatibility `/api/search` support family-scoped q, filename, metadata, profile/category, status, verification, dates and bounded pagination; integrated into `/documents`. API and real-browser document lifecycle tests pass. |
 | Sharing | PARTIAL | Share creation endpoint/model exists; no share access/revoke/list UI or complete public route. |
 | Audit | IMPLEMENTED BUT UNVERIFIED | Family-scoped admin API exists; no audit UI. |
 | Notifications | MISSING | Prisma model exists; no API/UI. |
@@ -24,7 +24,7 @@ Audit basis: current `master` working tree, Prisma schema/migrations, Next.js ro
 | Image enhancement/conversion | MISSING | No implementation. |
 | Android | MISSING / PLACEHOLDER | `apps/mobile/README.md` only; no client implementation. |
 | CSP/CORS hardening | PARTIAL | Security headers exist; CSP/CORS strategy requires a dedicated review before production. |
-| Automated quality checks | COMPLETE + VERIFIED | `npm run typecheck`, `npm run lint`, `npm run build`, `npm run test:email`, live Windows PostgreSQL onboarding API smoke test and Windows Chrome onboarding browser smoke test pass. |
+| Automated quality checks | COMPLETE + VERIFIED | `npm run typecheck`, `npm run lint`, `npm run build`, `npm run test:email`, live search/onboarding API smoke tests, Windows Chrome onboarding smoke test and existing live document/Appwrite lifecycle pass. |
 
 ## Phase 1 scope for this change
 

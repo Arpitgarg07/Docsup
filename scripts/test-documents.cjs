@@ -126,6 +126,22 @@ async function main() {
   assert.equal(stored.sizeOriginal, bytes.length);
   assert.deepEqual(Buffer.from(await storage.getFileDownload({ bucketId, fileId: version.storageFileId })), bytes);
   console.log('PASS real upload -> private Appwrite bytes -> PostgreSQL version/checksum -> UI list/detail');
+  await page.getByRole('button', { name: 'Close details', exact: true }).click();
+  const searchResponse = page.waitForResponse(response => new URL(response.url()).pathname === '/api/search/documents' && response.request().method() === 'GET');
+  await page.locator('input[aria-label="Search documents"]').fill('Synthetic lifecycle PDF');
+  assert.equal((await searchResponse).status(), 200);
+  await page.getByRole('button', { name: 'View document: Synthetic lifecycle PDF' }).waitFor();
+  let filterResponse = page.waitForResponse(response => new URL(response.url()).pathname === '/api/search/documents' && response.request().method() === 'GET');
+  await page.getByLabel('Filter by profile', { exact: true }).selectOption(a.family.profiles[0].id);
+  assert.equal((await filterResponse).status(), 200);
+  filterResponse = page.waitForResponse(response => new URL(response.url()).pathname === '/api/search/documents' && response.request().method() === 'GET');
+  await page.getByLabel('Filter by category', { exact: true }).selectOption(a.family.categories[0].id);
+  assert.equal((await filterResponse).status(), 200);
+  await page.getByRole('button', { name: 'Clear filters', exact: true }).click();
+  await page.getByRole('button', { name: 'View document: Synthetic lifecycle PDF' }).waitFor();
+  await page.getByRole('button', { name: 'View document: Synthetic lifecycle PDF' }).click();
+  await page.getByRole('heading', { name: 'Document details', exact: true }).waitFor();
+  console.log('PASS real Documents search -> profile/category filters -> clear filters -> existing detail flow');
   if (process.env.DOCSUP_SCREENSHOT) {
     await page.screenshot({ path: process.env.DOCSUP_SCREENSHOT, fullPage: true });
     await page.setViewportSize({ width: 390, height: 844 });
@@ -178,10 +194,10 @@ async function main() {
   console.log('PASS cross-family list/detail/token/download/delete denial; viewer restrictions; token tampering rejected');
 
   // Negative frontend transport check only; the real lifecycle above is not mocked.
-  await page.route('**/api/documents?*', route => route.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ error: { message: 'Synthetic list outage' } }) }));
+  await page.route('**/api/search/documents?*', route => route.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ error: { message: 'Synthetic list outage' } }) }));
   await page.getByRole('button', { name: 'Refresh documents' }).click();
   await page.getByRole('alert').filter({ hasText: 'Synthetic list outage' }).waitFor();
-  await page.unroute('**/api/documents?*');
+  await page.unroute('**/api/search/documents?*');
   await page.getByRole('button', { name: 'Retry list' }).click();
   await page.getByRole('button', { name: 'View document: Synthetic lifecycle PDF' }).waitFor();
   await page.getByRole('button', { name: 'Delete document', exact: true }).click();

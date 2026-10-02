@@ -33,6 +33,14 @@ export function Documents({ families, initialError }: { families: DocumentFamily
 function FamilyDocuments({ family, onBusyChange }: { family: DocumentFamily; onBusyChange: (busy: boolean) => void }) {
   const [page, setPage] = useState(1);
   const [revision, setRevision] = useState(0);
+  const [searchInput, setSearchInput] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [profileFilter, setProfileFilter] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [verificationFilter, setVerificationFilter] = useState("");
+  const [fromFilter, setFromFilter] = useState("");
+  const [toFilter, setToFilter] = useState("");
   const [result, setResult] = useState<DocumentPage | null>(null);
   const [loading, setLoading] = useState(true);
   const [listError, setListError] = useState("");
@@ -62,18 +70,34 @@ function FamilyDocuments({ family, onBusyChange }: { family: DocumentFamily; onB
   }, []);
 
   useEffect(() => {
+    const timer = window.setTimeout(() => setSearchTerm(searchInput.trim()), 350);
+    return () => window.clearTimeout(timer);
+  }, [searchInput]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [searchTerm, profileFilter, categoryFilter, statusFilter, verificationFilter, fromFilter, toFilter]);
+
+  useEffect(() => {
     const controller = new AbortController();
     setLoading(true);
     setListError("");
     setResult(null);
     const query = new URLSearchParams({ familyId: family.id, page: String(page), pageSize: "20" });
-    documentRequest<DocumentPage>(`/api/documents?${query}`, { signal: controller.signal }).then(data => {
+    if (searchTerm) query.set("q", searchTerm);
+    if (profileFilter) query.set("profileId", profileFilter);
+    if (categoryFilter) query.set("categoryId", categoryFilter);
+    if (statusFilter) query.set("status", statusFilter);
+    if (verificationFilter) query.set("verificationStatus", verificationFilter);
+    if (fromFilter) query.set("from", fromFilter);
+    if (toFilter) query.set("to", toFilter);
+    documentRequest<DocumentPage>(`/api/search/documents?${query}`, { signal: controller.signal }).then(data => {
       if (!controller.signal.aborted) setResult(data);
     }).catch(error => {
       if (!controller.signal.aborted) setListError(messageOf(error));
     }).finally(() => { if (!controller.signal.aborted) setLoading(false); });
     return () => controller.abort();
-  }, [family.id, page, revision]);
+  }, [family.id, page, revision, searchTerm, profileFilter, categoryFilter, statusFilter, verificationFilter, fromFilter, toFilter]);
 
   useEffect(() => {
     setDetail(null);
@@ -94,6 +118,24 @@ function FamilyDocuments({ family, onBusyChange }: { family: DocumentFamily; onB
   function refresh() {
     setPage(1);
     setRevision(value => value + 1);
+  }
+
+  function submitSearch(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setSearchTerm(searchInput.trim());
+    setPage(1);
+  }
+
+  function clearSearch() {
+    setSearchInput("");
+    setSearchTerm("");
+    setProfileFilter("");
+    setCategoryFilter("");
+    setStatusFilter("");
+    setVerificationFilter("");
+    setFromFilter("");
+    setToFilter("");
+    setPage(1);
   }
 
   async function runAction(name: string, operation: () => Promise<void>) {
@@ -187,7 +229,24 @@ function FamilyDocuments({ family, onBusyChange }: { family: DocumentFamily; onB
     });
   }
 
+  const hasSearchFilters = Boolean(searchTerm || profileFilter || categoryFilter || statusFilter || verificationFilter || fromFilter || toFilter);
+
   return <>
+    <section className={styles.panel} aria-labelledby="search-heading">
+      <div className="block-heading"><div><h2 id="search-heading">Search documents</h2><p className={styles.searchHint}>Search titles, original filenames, document types, profiles, categories and persisted metadata.</p></div>{hasSearchFilters && <button type="button" className="secondary-btn" onClick={clearSearch}>Clear filters</button>}</div>
+      <form className={styles.searchForm} onSubmit={submitSearch}>
+        <div className={styles.searchInput}><label className={styles.searchField}>Search documents<input aria-label="Search documents" value={searchInput} onChange={event => setSearchInput(event.target.value)} placeholder="Search documents…" maxLength={120} /></label><button type="submit" className="primary-btn">Search</button></div>
+        <div className={styles.searchGrid}>
+          <label className={styles.searchField}>Profile<select aria-label="Filter by profile" value={profileFilter} onChange={event => setProfileFilter(event.target.value)}><option value="">All profiles</option>{family.profiles.map(profile => <option key={profile.id} value={profile.id}>{profile.name}</option>)}</select></label>
+          <label className={styles.searchField}>Category<select aria-label="Filter by category" value={categoryFilter} onChange={event => setCategoryFilter(event.target.value)}><option value="">All categories</option>{family.categories.map(category => <option key={category.id} value={category.id}>{category.name}</option>)}</select></label>
+          <label className={styles.searchField}>Status<select aria-label="Filter by status" value={statusFilter} onChange={event => setStatusFilter(event.target.value)}><option value="">All statuses</option><option value="PROCESSING">Processing</option><option value="UPLOADED">Uploaded</option><option value="PENDING_APPROVAL">Pending approval</option><option value="APPROVED">Approved</option><option value="VERIFIED">Verified</option><option value="REJECTED">Rejected</option><option value="ARCHIVED">Archived</option></select></label>
+          <label className={styles.searchField}>Verification<select aria-label="Filter by verification" value={verificationFilter} onChange={event => setVerificationFilter(event.target.value)}><option value="">Any verification</option><option value="VERIFIED">Verified</option><option value="UNVERIFIED">Not verified</option></select></label>
+          <label className={styles.searchField}>From date<input aria-label="Filter from date" type="date" value={fromFilter} onChange={event => setFromFilter(event.target.value)} /></label>
+          <label className={styles.searchField}>To date<input aria-label="Filter to date" type="date" value={toFilter} onChange={event => setToFilter(event.target.value)} /></label>
+        </div>
+      </form>
+    </section>
+
     <section className={styles.panel} id="upload" aria-labelledby="upload-heading">
       <h2 id="upload-heading">Upload document</h2>
       <p className="small-muted">PDF, JPEG, PNG, WebP, DOC or DOCX · up to 25 MB. The server validates the file before private storage.</p>
@@ -214,7 +273,7 @@ function FamilyDocuments({ family, onBusyChange }: { family: DocumentFamily; onB
       {loading && <p role="status">Loading documents…</p>}
       {listError && <div className={styles.error} role="alert"><p>{listError}</p><button type="button" className="secondary-btn" disabled={busy} onClick={refresh}>Retry list</button></div>}
       {!loading && result && <>
-        {result.items.length === 0 ? <div className={styles.panel}><h3>{page === 1 ? "No documents yet" : "No documents on this page"}</h3><p>{page === 1 ? "Uploaded documents in this family will appear here." : "Return to the previous page or refresh the list."}</p></div> : <div className="doc-list">{result.items.map(doc => <article key={doc.id} className={`doc-card ${styles.card}`}>
+        {result.items.length === 0 ? <div className={styles.panel}><h3>{hasSearchFilters ? "No matching documents" : page === 1 ? "No documents yet" : "No documents on this page"}</h3><p>{hasSearchFilters ? "Try a different search or clear the filters." : page === 1 ? "Uploaded documents in this family will appear here." : "Return to the previous page or refresh the list."}</p></div> : <div className="doc-list">{result.items.map(doc => <article key={doc.id} className={`doc-card ${styles.card}`}>
           <div className="doc-thumb"><FileText size={19} /></div>
           <div className={styles.cardBody}>
             <button type="button" className={styles.documentTitle} disabled={busy} aria-label={`View document: ${doc.title}`} onClick={() => { setSelectedId(doc.id); setActionError(""); setNotice(""); setDeletionUncertain(false); }}>{doc.title}</button>
@@ -228,7 +287,7 @@ function FamilyDocuments({ family, onBusyChange }: { family: DocumentFamily; onB
         <div className={styles.actions} aria-label="Document pagination">
           <button type="button" className="secondary-btn" disabled={page <= 1 || busy} onClick={() => setPage(value => value - 1)}>Previous</button>
           <span>{result.total} documents · Page {page} of {Math.max(1, result.pages)}</span>
-          <button type="button" className="secondary-btn" disabled={page >= result.pages || busy} onClick={() => setPage(value => value + 1)}>Next</button>
+          <button type="button" className="secondary-btn" disabled={!(result.hasNextPage ?? page < result.pages) || busy} onClick={() => setPage(value => value + 1)}>Next</button>
         </div>
       </>}
     </section>
