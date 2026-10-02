@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FileText } from "./icons";
 import { documentRequest, fileSize, responseError, statusLabel, type DocumentFamily, type DocumentPage, type DocumentSummary } from "../lib/documents-client";
@@ -17,7 +18,7 @@ export function Documents({ families, initialError }: { families: DocumentFamily
   const family = families.find(item => item.id === familyId) ?? families[0];
 
   if (initialError) return <div className={styles.panel}><p role="alert">{initialError}</p><button type="button" className="secondary-btn" onClick={() => router.refresh()}>Try again</button></div>;
-  if (!family) return <div className={styles.panel}><h2>No family access yet</h2><p>You need an existing family membership to view or upload documents. Family setup is not part of this screen.</p></div>;
+  if (!family) return <div className={styles.panel}><h2>No family access yet</h2><p>You need an existing family membership to view or upload documents.</p><Link href="/family/create" className="primary-btn">Create Family Space</Link></div>;
 
   return <div className={styles.documents}>
     <label className={styles.family}>Family

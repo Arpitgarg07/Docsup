@@ -2,9 +2,9 @@
 
 ## Scope
 
-`/documents` is a real, session-authenticated document workspace. The dashboard retains its illustrative content; its Documents, View all, and Upload links now lead to the real workspace. Other product areas remain disabled.
+`/documents` is a real, session-authenticated document workspace. The dashboard retains illustrative statistics; its Documents, View all, and Upload links lead to the real workspace. Family and Profiles onboarding now provide real membership-scoped setup; Search, Notifications, Security and Settings remain disabled.
 
-There is no new backend endpoint, schema, migration, storage adapter, or authentication mechanism. The Documents server component calls the existing `getCurrentUser()` and loads only that user's `FamilyMember` records, selecting family/profile/category IDs and names. This supplies upload choices because no profile/category listing API exists. It does not implement profile or family management. All document reads and mutations use the existing REST APIs.
+The Documents server component calls the existing `getCurrentUser()` and loads only that user's `FamilyMember` records, selecting family/profile/category IDs and names. The browser workspace uses those authorized choices and the existing REST APIs; it does not create fallback demo choices. Family/profile/category mutations are implemented separately under `/family` and `/profiles` and use the same session and membership authority.
 
 ## Existing contracts used
 
@@ -31,7 +31,7 @@ Search was inspected: `GET /api/search?familyId=...&q=...` requires a 2–120 ch
 - Download first requests a token, then fetches the same-origin byte endpoint. API errors are displayed rather than saved as files. A temporary browser blob URL is used only to hand authenticated bytes to the browser's download manager.
 - Deletion requires confirmation. Cancel changes nothing. Errors do not claim success; an uncertain deletion blocks approval/download until retried or reconciled.
 - Family changes reset the document workspace. Aborted/stale list and detail requests cannot replace another family's results. The backend remains the authority for every operation.
-- An existing signed-in session, family membership, profile and category are prerequisites. The `/sign-in` UI now supports server-side Resend email OTP; configure the provider and verify real inbox delivery before relying on end-user login. See [authentication setup and status](authentication.md). Onboarding, profile/category creation, AI jobs and search UI remain outside the Documents flow.
+- An existing signed-in session, family membership, profile and category are prerequisites. Use `/family` to create/manage a family, `/profiles` to create/edit profiles, and the family detail page to add categories. The `/sign-in` UI supports server-side Resend email OTP; configure the provider and verify real inbox delivery before relying on end-user login. See [authentication setup and status](authentication.md). AI jobs and search UI remain outside the Documents flow.
 
 ## Opt-in live regression check
 
@@ -63,4 +63,4 @@ The successful lifecycle is not mocked. One separately labeled negative check in
 - Desktop/mobile screenshots were inspected; the mobile workspace had no horizontal overflow.
 - Synthetic files, users, OTP/session records and family data were cleaned up. The temporary test server was stopped; the user's existing development server was left running.
 
-This is not a production-readiness claim. The live file fixture was a PDF; other formats, large-file stress, interrupted storage failures, OTP delivery and onboarding were not validated by this run.
+This is not a production-readiness claim. The live file fixture was a PDF; other formats, large-file stress and interrupted storage failures were not validated by this run. Onboarding API/UI checks are tracked separately from the document lifecycle check.

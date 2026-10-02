@@ -15,7 +15,7 @@ type NavigationItem = {
 const links: NavigationItem[] = [
   { label: "Home", icon: Home, href: "/dashboard" },
   { label: "Documents", icon: FileText, href: "/documents" },
-  { label: "Profiles", icon: Users },
+  { label: "Profiles", icon: Users, href: "/profiles" },
   { label: "Search", icon: Folder },
 ];
 
@@ -48,7 +48,7 @@ export function Sidebar() {
       <nav className="side-nav" aria-label="Main navigation">
         {links.map((item) => <NavigationItemView item={item} pathname={pathname} key={item.label} />)}
         <div className="side-label">Family space</div>
-        <DisabledItem label="Family" icon={Users} />
+        <Link className={`side-item ${pathname.startsWith("/family") ? "active" : ""}`} href="/family" aria-current={pathname.startsWith("/family") ? "page" : undefined}><Users size={17} strokeWidth={pathname.startsWith("/family") ? 2.4 : 1.8} />Family</Link>
         <DisabledItem label="Notifications" icon={Bell} />
         <div className="side-label">Workspace</div>
         <DisabledItem label="Security" icon={LockKeyhole} />

@@ -2,22 +2,26 @@
   "schema_version": 1,
   "items": [
     {
-      "title": "Inspect the live OTP request path, environment loading, and diagnostic gaps",
+      "title": "Audit current repository and build feature matrix",
       "status": "done"
     },
     {
-      "title": "Reproduce and classify the upstream failure safely",
+      "title": "Inspect onboarding models, APIs, authorization, and reusable UI",
       "status": "done"
     },
     {
-      "title": "Apply the smallest safe fix and run checks",
+      "title": "Fix onboarding UI state and harden new management APIs",
       "status": "done"
     },
     {
-      "title": "Report live delivery and verification results or the precise blocker",
+      "title": "Connect onboarding to Documents and update accurate documentation",
+      "status": "done"
+    },
+    {
+      "title": "Run final quality checks and live browser/API regressions",
       "status": "done"
     }
   ],
-  "updated_at": "2026-10-01T21:26:56.091Z",
+  "updated_at": "2026-10-02T07:54:59.582Z",
   "session_id": "01a0f84b-d381-76c6-881f-891ce5d373a7"
 }

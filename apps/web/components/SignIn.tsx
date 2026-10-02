@@ -2,6 +2,7 @@
 
 import { useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import type { Route } from "next";
 import styles from "./SignIn.module.css";
 
 async function postAuth<T>(url: string, data: Record<string, string>): Promise<T> {
@@ -12,7 +13,7 @@ async function postAuth<T>(url: string, data: Record<string, string>): Promise<T
   return body.data as T;
 }
 
-export function SignIn({ googleEnabled, emailEnabled, sessionError }: { googleEnabled: boolean; emailEnabled: boolean; sessionError?: string }) {
+export function SignIn({ googleEnabled, emailEnabled, redirectTo = "/dashboard", sessionError }: { googleEnabled: boolean; emailEnabled: boolean; redirectTo?: string; sessionError?: string }) {
   const router = useRouter();
   const [destination, setDestination] = useState("");
   const [code, setCode] = useState("");
@@ -42,7 +43,7 @@ export function SignIn({ googleEnabled, emailEnabled, sessionError }: { googleEn
         setCode("");
         // The server sets the HttpOnly cookie. Do not read/store tokens in JS.
         // Refresh invalidates previously visited signed-out server-component data.
-        router.replace("/dashboard");
+        router.replace(redirectTo as Route);
         router.refresh();
       }
     } catch (failure) {
